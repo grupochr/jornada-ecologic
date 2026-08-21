@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jornada da Mentoria · Ecologic</title>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f4f6fb; --card:#ffffff; --ink:#1a2233; --muted:#6b7488; --line:#e4e8f1;
+  --blue:#1f47d6; --blue-soft:#eaf0ff; --orange:#f5821f;
+  --green:#16a34a; --green-soft:#e7f7ec; --amber:#d98a00; --amber-soft:#fdf3dd;
+  --red:#dc2626; --red-soft:#fdeaea; --grey-soft:#eef1f6;
+  --shadow:0 1px 3px rgba(20,30,60,.06),0 6px 20px rgba(20,30,60,.05);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45;}
+.wrap{max-width:1080px;margin:0 auto;padding:22px 18px 80px;}
+.hero{background:linear-gradient(135deg,#1f47d6 0%,#2e63ff 55%,#3f7bff 100%);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,.08);border-radius:50%;}
+.hero h1{margin:0;font-size:22px;letter-spacing:.2px;}
+.hero p{margin:6px 0 0;opacity:.92;font-size:13.5px;max-width:660px;}
+.hero .chips{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;}
+.chip{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;}
+.pstrip{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow);margin-top:16px;}
+.ring{--p:0;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) calc(var(--p)*1%),var(--grey-soft) 0);}
+.ring .inner{width:74px;height:74px;border-radius:50%;background:var(--card);display:grid;place-items:center;text-align:center;}
+.ring .inner b{font-size:22px;line-height:1;} .ring .inner span{font-size:10px;color:var(--muted);}
+.pstats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.pstat{background:var(--grey-soft);border-radius:12px;padding:10px 12px;}
+.pstat b{font-size:19px;display:block;} .pstat span{font-size:11.5px;color:var(--muted);}
+h2.sec{font-size:15px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:30px 4px 12px;display:flex;align-items:center;gap:9px;}
+h2.sec::before{content:"";width:6px;height:18px;background:var(--orange);border-radius:3px;}
+h2.sec .addbtn{margin-left:auto;}
+.addbtn{background:var(--blue-soft);border:1px solid #cddaff;color:var(--blue);border-radius:8px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:0;text-transform:none;}
+.addbtn:hover{background:#dbe6ff;}
+.timeline{display:flex;overflow-x:auto;padding:6px 2px 14px;}
+.tl-node{flex:0 0 auto;width:118px;text-align:center;position:relative;padding-top:26px;cursor:pointer;border-radius:10px;transition:background .15s;}
+.tl-node:hover{background:#fff;box-shadow:var(--shadow);}
+.tl-node::before{content:"";position:absolute;top:11px;left:0;right:0;height:3px;background:var(--line);}
+.tl-node:first-child::before{left:50%;} .tl-node:last-child::before{right:50%;}
+.tl-dot{position:absolute;top:4px;left:50%;transform:translateX(-50%);width:16px;height:16px;border-radius:50%;background:#fff;border:3px solid var(--line);z-index:2;}
+.tl-node.done .tl-dot{background:var(--green);border-color:var(--green);}
+.tl-node.now .tl-dot{background:var(--orange);border-color:var(--orange);box-shadow:0 0 0 5px rgba(245,130,31,.18);}
+.tl-node.plan .tl-dot{background:#fff;border-color:var(--blue);}
+.tl-label{font-size:11.5px;font-weight:700;margin-top:4px;} .tl-date{font-size:10px;color:var(--muted);}
+.tl-theme{font-size:10px;opacity:.8;margin-top:3px;line-height:1.25;padding:0 6px;}
+.tl-mark{font-size:9.5px;margin-top:4px;color:var(--green);font-weight:700;}
+.tl-hint{font-size:11px;color:var(--muted);margin:-6px 4px 8px;}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px;}
+.pill{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);border-top:4px solid var(--line);position:relative;}
+.pill .ptop{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.pill h3{margin:0;font-size:13.5px;} .pill p{margin:8px 0 0;font-size:11.5px;color:var(--muted);}
+.pill .st{font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+.st.green{background:var(--green-soft);color:var(--green);} .st.amber{background:var(--amber-soft);color:var(--amber);}
+.st.orange{background:#ffe9d6;color:var(--orange);} .st.red{background:var(--red-soft);color:var(--red);}
+.eng{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;}
+.eperson{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 12px;box-shadow:var(--shadow);}
+.eperson .en{font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:6px;}
+.eperson .role{font-size:10.5px;color:var(--muted);margin-bottom:7px;}
+.ebar{height:7px;border-radius:5px;background:var(--grey-soft);overflow:hidden;margin-bottom:7px;}
+.ebar i{display:block;height:100%;border-radius:5px;}
+.eperson select{width:100%;font-size:11.5px;border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--card);color:var(--ink);}
+.mini{background:none;border:none;cursor:pointer;font-size:12px;opacity:.45;padding:2px 3px;border-radius:6px;line-height:1;}
+.mini:hover{opacity:1;background:var(--grey-soft);}
+.phase{margin-bottom:8px;}
+.phase-head{display:flex;align-items:center;gap:12px;cursor:pointer;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;box-shadow:var(--shadow);margin-bottom:10px;user-select:none;}
+.phase-num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 auto;font-size:14px;}
+.phase-head h3{margin:0;font-size:15px;} .phase-head .pmeta{font-size:11.5px;color:var(--muted);}
+.phase-prog{flex:0 0 130px;}
+.phase-prog .pp-bar{height:7px;border-radius:5px;background:var(--grey-soft);overflow:hidden;}
+.phase-prog .pp-bar i{display:block;height:100%;background:var(--green);border-radius:5px;}
+.phase-prog .pp-txt{font-size:10.5px;color:var(--muted);text-align:right;margin-top:3px;}
+.caret{transition:transform .2s;color:var(--muted);font-size:13px;}
+.phase.collapsed .caret{transform:rotate(-90deg);} .phase.collapsed .tasks{display:none;}
+.tasks{display:grid;gap:9px;margin:0 0 18px 8px;border-left:2px dashed var(--line);padding-left:16px;}
+.task{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr auto;gap:12px;}
+.task.done{background:#f6fbf7;border-color:#cdeed6;} .task.done .ttitle{text-decoration:line-through;opacity:.6;}
+.cbox{appearance:none;-webkit-appearance:none;width:22px;height:22px;border:2px solid var(--line);border-radius:7px;cursor:pointer;position:relative;flex:0 0 auto;margin-top:2px;}
+.cbox:hover{border-color:var(--green);} .cbox:checked{background:var(--green);border-color:var(--green);}
+.cbox:checked::after{content:"✓";color:#fff;font-size:14px;font-weight:900;position:absolute;top:-1px;left:3px;}
+.ttitle{font-weight:700;font-size:13.5px;} .tdetail{font-size:11.5px;color:var(--muted);margin-top:3px;}
+.tbadges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.bdg{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--grey-soft);color:var(--muted);}
+.bdg.gut{background:var(--red-soft);color:var(--red);} .bdg.src{background:var(--blue-soft);color:var(--blue);}
+.tctrl{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:flex-end;}
+.tctrl label{font-size:10px;color:var(--muted);display:flex;flex-direction:column;gap:3px;}
+.tctrl select,.tctrl input{font-size:11.5px;border:1px solid var(--line);border-radius:8px;padding:4px 7px;background:var(--card);color:var(--ink);}
+.tctrl select{min-width:110px;}
+.obsbtn{font-size:10.5px;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:8px;padding:5px 10px;cursor:pointer;}
+.obsbtn.has{background:var(--amber-soft);border-color:#f0dfae;color:#8a6a10;}
+.obsbox{margin-top:9px;}
+.obsbox textarea{width:100%;min-height:64px;font:inherit;font-size:11.5px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fffdf6;color:var(--ink);resize:vertical;}
+.tacts{display:flex;flex-direction:column;gap:2px;align-items:center;}
+.footer{text-align:center;color:var(--muted);font-size:11px;margin-top:34px;line-height:1.6;}
+.fbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+.resetbtn{background:none;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:5px 12px;font-size:11px;cursor:pointer;}
+.resetbtn:hover{border-color:var(--blue);color:var(--blue);}
+.resetbtn.danger:hover{border-color:var(--red);color:var(--red);}
+/* ---- modal ---- */
+.ov{position:fixed;inset:0;background:rgba(16,24,45,.5);display:grid;place-items:center;padding:18px;z-index:50;}
+.ov[hidden]{display:none;}
+.mod{background:var(--card);border-radius:16px;box-shadow:0 20px 60px rgba(10,20,50,.28);width:100%;max-width:640px;max-height:88vh;overflow:auto;}
+.mod-h{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;position:sticky;top:0;background:var(--card);z-index:2;}
+.mod-h h3{margin:0;font-size:16px;flex:1;}
+.mod-b{padding:18px 20px;}
+.mod-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;position:sticky;bottom:0;background:var(--card);}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:700;margin-bottom:4px;}
+.fld input,.fld select,.fld textarea{width:100%;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:var(--card);color:var(--ink);}
+.fld textarea{resize:vertical;min-height:70px;}
+.fld .hint{font-size:10.5px;color:var(--muted);margin-top:4px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:9px;padding:8px 15px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn:hover{background:var(--grey-soft);}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff;} .btn.pri:hover{background:#1a3ab5;}
+.btn.dgr{color:var(--red);border-color:#f3cfcf;} .btn.dgr:hover{background:var(--red-soft);}
+.btn.gh{border:none;background:none;color:var(--muted);}
+.rd h4{margin:16px 0 6px;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);}
+.rd h4:first-child{margin-top:0;}
+.rd p{margin:0;font-size:13.5px;line-height:1.55;}
+.rd ul{margin:0;padding-left:20px;font-size:13px;line-height:1.7;}
+.rd .empty{color:var(--muted);font-style:italic;font-size:13px;}
+.rd .obsq{background:#fffdf6;border:1px solid #f0e6c8;border-radius:10px;padding:10px 12px;font-size:13px;}
+@media(max-width:560px){.pstats{grid-template-columns:repeat(2,1fr);}.phase-prog{display:none;}.grid2{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1 id="h-title">🧭 Jornada da Mentoria</h1>
+    <p id="h-sub"></p>
+    <div class="chips" id="h-chips"></div>
+  </div>
+  <div class="pstrip">
+    <div class="ring" id="ring"><div class="inner"><b id="ringPct">0%</b><span>concluído</span></div></div>
+    <div class="pstats">
+      <div class="pstat"><b id="stDone">0</b><span>tarefas concluídas</span></div>
+      <div class="pstat"><b id="stTotal">0</b><span>tarefas no total</span></div>
+      <div class="pstat"><b id="stOpen">0</b><span>em aberto</span></div>
+      <div class="pstat"><b id="stEnc">0</b><span id="stEncLbl">encontros realizados</span></div>
+    </div>
+  </div>
+  <section id="sec-tl">
+    <h2 class="sec">Linha do tempo dos encontros<button class="addbtn" onclick="novoEncontro()">+ Encontro</button></h2>
+    <div class="tl-hint">Clique em qualquer encontro para ver o resumo, os entregáveis e as observações — e para editar.</div>
+    <div class="timeline" id="timeline"></div>
+  </section>
+  <section id="sec-pil">
+    <h2 class="sec">Status dos pilares<button class="addbtn" onclick="editPilar(-1)">+ Pilar</button></h2>
+    <div class="pillars" id="pillars"></div>
+  </section>
+  <section id="sec-eng">
+    <h2 class="sec">Nível de engajamento da equipe<button class="addbtn" onclick="editPessoa(-1)">+ Pessoa</button></h2>
+    <div class="eng" id="eng"></div>
+  </section>
+  <h2 class="sec">Jornada de tarefas<button class="addbtn" onclick="novaFase()">+ Fase</button></h2>
+  <div id="journey"></div>
+  <div class="footer">
+    <span id="f-contact"></span>
+    <br>Tudo o que você edita fica salvo neste navegador. Use “Exportar” para enviar o painel atualizado a outra pessoa.
+    <div class="fbtns">
+      <button class="resetbtn" onclick="exportar()">💾 Exportar</button>
+      <button class="resetbtn" onclick="document.getElementById('imp').click()">📂 Importar</button>
+      <button class="resetbtn danger" onclick="resetAll()">↺ Restaurar o plano original</button>
+    </div>
+    <input type="file" id="imp" accept=".json" hidden onchange="importar(this)">
+  </div>
+</div>
+
+<div class="ov" id="ov" hidden onclick="if(event.target===this)fecharModal()">
+  <div class="mod">
+    <div class="mod-h"><h3 id="mod-t"></h3><button class="btn gh" onclick="fecharModal()">✕</button></div>
+    <div class="mod-b" id="mod-b"></div>
+    <div class="mod-f" id="mod-f"></div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  cliente: "Ecologic",
+  subtitulo: "Jornada da assessoria comercial CHR · ciclo agosto a dezembro de 2026. Clique nos encontros para ver o que foi entregue. Você pode criar, editar, realocar e excluir tudo — e anotar observações em cada tarefa.",
+  contato: "CHR Assessoria · gestao@mentoriachr.com · (62) 9.9918-2876",
+  encontroAtual: 1,
+  chips: ["📅 Encontro 3 / 15","🚀 Início 01/08/2026","🎯 MRR R$ 284.440 até 21/12","⚡ 20 ações · 3 ondas","🔥 Reativação da carteira: iniciada em 21/08","🏁 Ciclo: ago–dez/2026"],
+  pessoas: ["Wochiton","Marina","Felipe","Igor","Andressa","Talita","Vitória","CHR","Executivo comercial","Assistente comercial","Wochiton + Andressa","Wochiton + Felipe","Sócios + CHR"],
+
+  encontros: [
+    { n:"E1",  d:"01/08", t:"Planejamento Estratégico, Onboarding e Mentalidade", s:"done", resumo:"Sessão de planejamento estratégico com os sócios e a equipe. Levantamos o raio-x da empresa nas três lentes (comercial, financeiro, pessoas), a identidade organizacional, a VRIO, o PESTEL e as 5 Forças, a SWOT cruzada e as três metas SMART do ciclo. Ficou registrada a decisão de adiar missão e valores para o 1º trimestre de 2027.", entregas:["Mapa da Arquitetura de Receita","Diagnóstico das 3 lentes com números da carteira","VRIO e análise externa","SWOT cruzada","3 metas SMART do ciclo"], obs:"" },
+    { n:"E2",  d:"10/08", t:"Diagnóstico 360 e Priorização (GUT + Pareto)", s:"done", resumo:"Transformação do diagnóstico em plano executável: 20 ações da SWOT pontuadas por matriz GUT, distribuídas em três ondas e amarradas aos encontros da jornada. Definidas as 8 ações imediatas dos primeiros 15 dias e a decisão estratégica público × privado.", entregas:["Plano de Ação 2026 (20 ações priorizadas por GUT)","Matriz GUT completa","8 ações imediatas com dono e prazo","Mapa ação → encontro → data","Anexos Técnicos com dados a levantar"], obs:"" },
+    { n:"E3",  d:"17/08", t:"ICP e Posicionamento", s:"done", resumo:"Definição do perfil de cliente ideal e início do trabalho de limpeza da carteira: higienização e priorização da lista dos 143 contratos órfãos de recorrência e dos clientes de consultoria sem contrato de manutenção. A base ficou pronta para a reativação, que começa em 21/08.", entregas:["Documento de ICP (perfil de cliente ideal)","Matriz de Ofertas por perfil","Critério de priorização dos 143 órfãos","ICP do setor público para o mapa de prefeituras","Carteira limpa e priorizada para reativação"], obs:"Resumo escrito a partir do reporte da assessoria — complementar com o que mais foi decidido no encontro." },
+    { n:"E4",  d:"24/08", t:"Metas, Ritmo de Gestão e Cadência", s:"now", resumo:"", entregas:["Painel de Metas por cargo e por time","Calendário de Ritmo de Gestão (semanal, quinzenal, mensal, trimestral)","Metas do novo papel do Felipe","Indicador de concentração do público no MRR"], obs:"" },
+    { n:"E5",  d:"31/08", t:"Análise de Margem e Curva ABC", s:"plan", resumo:"", entregas:["Análise de Margem por tipo de contrato e por macrossetor","Curva ABC de contratos e clientes","Margem real público × privado","Churn de assessoria 2025–2026"], obs:"" },
+    { n:"E6",  d:"07/09", t:"Novo Modelo de Remuneração", s:"plan", resumo:"", entregas:["Modelo de Remuneração variável","Comissão por tipo de contrato (assessoria x consultoria)","Regras de gatilho e clawback","Plano de transição do modelo atual"], obs:"" },
+    { n:"E7",  d:"14/09", t:"Processo Comercial e Funil", s:"plan", resumo:"", entregas:["Desenho do Funil Comercial com etapas, gatilhos e SLA","BPMN do atendimento","Esteira de pós-venda como etapa formal do funil"], obs:"" },
+    { n:"E8",  d:"21/09", t:"CRM e Gestão de Pipeline", s:"plan", resumo:"", entregas:["CRM configurado com funil e taxonomia de 4 níveis","Ficha de conta pública (prefeito, secretários, decisores, pauta)","Base de contatos do Wochiton migrada","Rotina de uso e cadências de follow-up"], obs:"" },
+    { n:"E9",  d:"05/10", t:"Qualificação e Proposta", s:"plan", resumo:"", entregas:["Roteiro de Qualificação","Modelo de Proposta com validade","Cadência de follow-up","Metodologia de indicações com contrapartida"], obs:"" },
+    { n:"E10", d:"19/10", t:"Manual do Vendedor", s:"plan", resumo:"", entregas:["Manual do Vendedor","Argumento de venda por risco evitado","Tabela de produtos, preço e prazo","Roteiro de pós-venda"], obs:"" },
+    { n:"E11", d:"02/11", t:"Política Comercial", s:"plan", resumo:"", entregas:["Política Comercial normativa","Faixas de desconto e alçadas em 3 níveis","Regras de prazo, crédito e faturamento","Cláusula de reajuste anual"], obs:"" },
+    { n:"E12", d:"16/11", t:"Cargos do Comercial", s:"plan", resumo:"", entregas:["Descrição dos Cargos Comerciais","Ficha do cargo de Gestão Comercial (Felipe)","Indicadores por cargo","Trilha de níveis Jr/Pl/Sr"], obs:"" },
+    { n:"E13", d:"30/11", t:"Precificação", s:"plan", resumo:"", entregas:["Política de Precificação por tipo de contrato","Método de formação de preço sobre o banco de horas","Regras por complexidade"], obs:"" },
+    { n:"E14", d:"07/12", t:"Marketing e Aquisição", s:"plan", resumo:"", entregas:["Plano de Marketing e Aquisição","Canal de indicações e parcerias (solares, projetistas)","Rotina de prospecção nos setores vazios","Econect como oferta autônoma"], obs:"" },
+    { n:"E15", d:"14/12", t:"Revisão da Arquitetura e Continuidade", s:"plan", resumo:"", entregas:["Relatório de Evolução (antes × depois)","Leitura final da Arquitetura de Receita","Plano de Continuidade","Desenho do ciclo seguinte"], obs:"" }
+  ],
+
+  pilares: [
+    { n:"Meta 2 · Processos internos", st:"Caminho crítico", nivel:"red",
+      d:"Pré-requisito de tudo: sem processos documentados o Igor não absorve a operação, o Felipe não sai dela e não existe gestão comercial. É o elo 1 da corrente." },
+    { n:"P1 · Margem por produto e setor", st:"Crítico c/ plano", nivel:"orange",
+      d:"A margem de 40% não fecha com os números do diagnóstico. Coleta dos 6 dados de custo até 22/08; apuração no E5, em 31/08." },
+    { n:"P2 · CRM e contas públicas", st:"Crítico c/ plano", nivel:"orange",
+      d:"O relacionamento com as 15 prefeituras existe em um celular e na memória de uma pessoa. Ferramenta escolhida até 15/08, fichas completas até 30/09." },
+    { n:"P3 · Estrutura comercial", st:"Em transição", nivel:"amber",
+      d:"Wochiton no público, Felipe na gestão comercial, Igor na operação. Duas contratações no ciclo: assistente em agosto, executivo em setembro." },
+    { n:"P4 · Extração do setor privado", st:"Em ritmo", nivel:"green",
+      d:"143 contratos órfãos com R$ 748 mil de consultoria já paga e zero recorrência, mais cerca de 250 clientes de consultoria sem manutenção. Carteira limpa e priorizada na semana de 17/08; a reativação começa em 21/08. Maior alavanca do plano." },
+    { n:"P5 · Priorização das ações", st:"Concluído", nivel:"green",
+      d:"20 ações da SWOT cruzada pontuadas por GUT e distribuídas em três ondas. Entregue no E2." }
+  ],
+
+  equipe: [
+    { n:"Wochiton", r:"Sócio · relações institucionais e setor público · alçada de exceção em preço", e:"Alto" },
+    { n:"Felipe",   r:"Gestão comercial · funil, ritmo, metas e treinamento da equipe", e:"Alto" },
+    { n:"Igor",     r:"Supervisão operacional · absorve a operação que era do Felipe · controle de licenças", e:"Médio" },
+    { n:"Andressa", r:"Executiva de contas · conversão da base instalada e pós-venda", e:"Médio" },
+    { n:"Marina",   r:"Sócia · financeiro, administrativo e pessoas · apuração de margem", e:"Médio" },
+    { n:"Talita",   r:"Financeiro · inadimplência, prazo de recebimento e custos", e:"Baixo" },
+    { n:"Vitória",  r:"Econect · produto, IA embarcada e apoio ao comercial", e:"Baixo" }
+  ],
+
+  fases: [
+    { id:"f0", numero:0, cor:"#b03a2e",
+      titulo:"Fase 0 · Ações imediatas", meta:"até 18/08/2026 · COMEÇA ANTES DE QUALQUER ENCONTRO",
+      tarefas:[
+        { id:"t001", titulo:"Acordo formal de transição Felipe → gestão comercial", detalhe:"Listar item a item o que sai da mão do Felipe e passa para o Igor, com data por item. Sem isso, a Meta 1 inteira fica bloqueada.", resp:"Wochiton", prazo:"2026-08-08", feito:false, fonte:"E2 · 10/08", prio:"Destrava o ciclo", obs:"" },
+        { id:"t002", titulo:"Levantar todas as licenças ativas e seus vencimentos", detalhe:"Planilha única com contrato, cliente, tipo de licença, vencimento e responsável. Protege 100% do MRR.", resp:"Igor", prazo:"2026-08-15", feito:false, fonte:"Meta 2 · interno", obs:"" },
+        { id:"t003", titulo:"Abrir o custo de R$ 137.000 por linha", detalhe:"Folha, encargos, pró-labore, aluguel, veículo, software, contador, marketing e impostos separados.", resp:"Marina", prazo:"2026-08-15", feito:false, fonte:"E5 · 31/08", prio:"Prioridade 1", obs:"" },
+        { id:"t004", titulo:"Estimar as horas por função dedicadas a cada perfil", detalhe:"Público, assessoria privada e consultoria. Estimativa do banco de horas já usado para escopar serviço.", resp:"Felipe", prazo:"2026-08-15", feito:false, fonte:"E5 · 31/08", prio:"Prioridade 1", obs:"" },
+        { id:"t005", titulo:"Extrair a base de contatos do celular do Wochiton", detalhe:"Exportar a agenda, classificar por tipo (prefeitura, cliente privado, parceiro, fornecedor) e preparar para o CRM.", resp:"Wochiton + Andressa", prazo:"2026-08-18", feito:false, fonte:"E8 · 21/09", prio:"Prioridade 2", obs:"" },
+        { id:"t006", titulo:"Gerar a lista nominal dos 143 órfãos e das consultorias sem manutenção", detalhe:"Extrair da carteira classificada, ordenar por valor já pago e entregar pronta para a Andressa trabalhar.", resp:"CHR", prazo:"2026-08-08", feito:true, fonte:"E3 · 17/08", prio:"Prioridade 4", obs:"Lista entregue e usada na limpeza de carteira da semana de 17/08." },
+        { id:"t007", titulo:"Abrir a vaga de assistente comercial", detalhe:"É a contratação que libera a Andressa da proposta e do cadastro.", resp:"Marina", prazo:"2026-08-12", feito:false, fonte:"E2 · 10/08", obs:"" },
+        { id:"t008", titulo:"Agendar as quatro reuniões do ritmo de gestão", detalhe:"Semanal de time, funil comercial semanal, painel mensal e revisão trimestral — com recorrência no calendário de todos.", resp:"Marina", prazo:"2026-08-08", feito:false, fonte:"E4 · 24/08", obs:"" }
+      ]},
+
+    { id:"f1", numero:1, cor:"#8a6d3b",
+      titulo:"Fase 1 · Onda 1 — destravar a estrutura", meta:"agosto e setembro · GUT 100 a 125",
+      tarefas:[
+        { id:"t101", titulo:"A01 · Transição Felipe → comercial e Igor → operação", detalhe:"Meta: 60% do tempo do Felipe no comercial em 15/09 e 80% em 15/10. O E4 define as metas do papel; o E12 formaliza o cargo.", resp:"Wochiton", prazo:"2026-09-15", feito:false, fonte:"E4 · 24/08", prio:"GUT 125", obs:"" },
+        { id:"t102", titulo:"A02 · Esteira de pós-venda", detalhe:"Toda consultoria entregue gera oferta de contrato de manutenção em até 15 dias. Até R$ 55.572/mês de MRR novo com 20% de conversão.", resp:"Felipe", prazo:"2026-08-25", feito:false, fonte:"E7 · 14/09", prio:"GUT 125", obs:"Reativação da carteira iniciada em 21/08 sobre a lista já higienizada. Acompanhar contatos, conversas qualificadas e conversão — é a medição que define o gatilho da 3ª pessoa no checkpoint de 30/09." },
+        { id:"t103", titulo:"A03 · Higienizar e priorizar a lista da base", detalhe:"143 órfãos e cerca de 250 clientes de consultoria sem manutenção, ordenados por valor pago e recência, em três faixas de prioridade.", resp:"Andressa", prazo:"2026-08-25", feito:true, fonte:"E3 · 17/08", prio:"GUT 100", obs:"Limpeza e priorização da carteira concluídas na semana de 17/08. Base pronta para a reativação." },
+        { id:"t104", titulo:"A04 · Apurar custo e margem por tipo de contrato e setor", detalhe:"Os seis dados do bloco 1 dos anexos: custo fixo aberto, custo por pessoa, horas por perfil, deslocamento, prazo de recebimento e inadimplência.", resp:"Marina", prazo:"2026-08-22", feito:false, fonte:"E5 · 31/08", prio:"GUT 100 · Prioridade 1", obs:"" },
+        { id:"t105", titulo:"A05 · Subir a base de contatos do Wochiton para o CRM", detalhe:"Converte o ativo que hoje vive em um aparelho em ativo da empresa.", resp:"Wochiton + Andressa", prazo:"2026-09-05", feito:false, fonte:"E8 · 21/09", prio:"GUT 100", obs:"" },
+        { id:"t106", titulo:"A06 · Implantar o CRM com funil, taxonomia e ficha de conta pública", detalhe:"Ferramenta escolhida até 15/08. Usa a árvore de 4 níveis e o painel de carteira já entregues.", resp:"Felipe", prazo:"2026-09-21", feito:false, fonte:"E8 · 21/09", prio:"GUT 100 · Prioridade 2", obs:"" },
+        { id:"t107", titulo:"A07 · Documentar as contas públicas e Felipe como sombra", detalhe:"Prefeito, secretários, decisores, histórico, pauta política e vencimentos das 15 prefeituras. Felipe em 100% das reuniões públicas.", resp:"Wochiton + Felipe", prazo:"2026-09-30", feito:false, fonte:"E8 · 21/09", prio:"GUT 100", obs:"" },
+        { id:"t108", titulo:"Contratar o assistente comercial", detalhe:"R$ 3.000 a 3.800 com encargos. Libera cerca de 2 fechamentos por mês da Andressa — paga-se no primeiro mês.", resp:"Marina", prazo:"2026-08-31", feito:false, fonte:"E2 · 10/08", obs:"" },
+        { id:"t109", titulo:"Contratar o executivo comercial", detalhe:"R$ 6.500 a 8.000 fixo mais comissão. Só entra depois que a tabela de preço e a alçada existirem.", resp:"Felipe", prazo:"2026-09-30", feito:false, fonte:"E6 · 07/09", obs:"" }
+      ]},
+
+    { id:"f2", numero:2, cor:"#d98a00",
+      titulo:"Fase 2 · Onda 2 — normatizar e abrir frentes", meta:"outubro e novembro · GUT 64 a 80",
+      tarefas:[
+        { id:"t201", titulo:"A08 · Tabela de preços por tipo de contrato e alçada de desconto", detalhe:"Alçada em três níveis: até 10% para a equipe, 10 a 20% para o Felipe, acima de 20% e todo contrato público para o Wochiton. Nenhum desconto sem contrapartida.", resp:"CHR", prazo:"2026-09-30", feito:false, fonte:"E11 · 02/11", prio:"GUT 80 · Prioridade 1", obs:"" },
+        { id:"t202", titulo:"A09 · Mapa dos municípios com passivo ambiental", detalhe:"Lixão a encerrar, PMSB vencido, ICMS Ecológico não pleiteado. Decisor mapeado. Fechamento programado para nov/26 a mar/27, por causa do defeso.", resp:"Wochiton", prazo:"2026-10-31", feito:false, fonte:"E3 · 17/08", prio:"GUT 80", obs:"" },
+        { id:"t203", titulo:"A10 · Cláusula de reajuste anual em 100% dos contratos", detalhe:"Reajuste por índice nos contratos novos e plano de aditivo para os ativos sem cláusula. Protege o MRR da corrosão.", resp:"Marina", prazo:"2026-11-30", feito:false, fonte:"E11 · 02/11", prio:"GUT 80", obs:"" },
+        { id:"t204", titulo:"A11 · Metodologia de indicações", detalhe:"Pedido estruturado em todo encerramento de projeto e toda visita técnica: quem pede, quando, com que roteiro e contrapartida.", resp:"Felipe", prazo:"2026-10-31", feito:false, fonte:"E9 · 05/10", prio:"GUT 64", obs:"" },
+        { id:"t205", titulo:"A12 · Trocar o argumento de venda para risco evitado", detalhe:"Material comparando o custo da multa e da interdição com o custo da assessoria, por tipo de atividade. Tira a negociação do terreno de preço.", resp:"Felipe", prazo:"2026-11-30", feito:false, fonte:"E10 · 19/10", prio:"GUT 64", obs:"" },
+        { id:"t206", titulo:"A13 · Acompanhar a concentração do público no MRR", detalhe:"Indicador mensal de participação do setor público, para garantir que o privado cresça mais rápido e a concentração de 41,5% caia.", resp:"CHR", prazo:"2026-10-31", feito:false, fonte:"E4 · 24/08", prio:"GUT 64", obs:"" },
+        { id:"t207", titulo:"A14 · Medir o churn de assessoria de 2025 e 2026", detalhe:"Contratos perdidos e a causa de cada perda. Sem isso, a meta de 100 contratos pode ser líquida negativa.", resp:"Marina", prazo:"2026-10-31", feito:false, fonte:"E5 · 31/08", prio:"GUT 64 · Prioridade 1", obs:"" }
+      ]},
+
+    { id:"f3", numero:3, cor:"#2b6cb0",
+      titulo:"Fase 3 · Onda 3 — frentes de médio prazo", meta:"dezembro · GUT abaixo de 64",
+      tarefas:[
+        { id:"t301", titulo:"A15 · Posicionamento premium com garantia de conformidade", detalhe:"A Ecologic responde pelo prazo da licença; o concorrente barato não. Sustenta preço sem entrar em leilão.", resp:"CHR", prazo:"2026-12-31", feito:false, fonte:"E3 · 17/08", prio:"GUT 48", obs:"" },
+        { id:"t302", titulo:"A16 · Embutir IA na Econect", detalhe:"Antes que plataformas genéricas comoditizem a parte documental do serviço. Preserva o diferencial por 24 a 36 meses.", resp:"Vitória", prazo:"2027-01-31", feito:false, fonte:"E14 · 07/12", prio:"GUT 40", obs:"" },
+        { id:"t303", titulo:"A17 · Prospecção ativa nos setores vazios", detalhe:"Postos de combustível (3 contratos em toda a carteira), energia solar e comércio/logística.", resp:"Executivo comercial", prazo:"2026-12-31", feito:false, fonte:"E14 · 07/12", prio:"GUT 36", obs:"" },
+        { id:"t304", titulo:"A18 · Produtizar a Econect como oferta autônoma", detalhe:"Preço, proposta e material de venda do sistema como produto independente, rumo às 50 assinaturas.", resp:"Vitória", prazo:"2027-01-31", feito:false, fonte:"E14 · 07/12", prio:"GUT 36", obs:"" },
+        { id:"t305", titulo:"A19 · Parcerias de indicação com integradores solares", detalhe:"Acordo em duas vias com integradores e projetistas. Abre o setor de Energia, hoje com 5 contratos.", resp:"Felipe", prazo:"2027-01-31", feito:false, fonte:"E14 · 07/12", prio:"GUT 36", obs:"" },
+        { id:"t306", titulo:"A20 · Produto público recorrente", detalhe:"Assessoria de manutenção mensal para prefeituras, além do projeto pontual. Sobrevive melhor a orçamento apertado.", resp:"Wochiton", prazo:"2027-01-31", feito:false, fonte:"E3 · 17/08", prio:"GUT 36", obs:"" }
+      ]},
+
+    { id:"f4", numero:4, cor:"#16a34a",
+      titulo:"Fase 4 · Rampa da meta", meta:"de 49 para 100 assessorias privadas · MRR R$ 284.440",
+      tarefas:[
+        { id:"t401", titulo:"Agosto · 53 assessorias privadas", detalhe:"+4 no mês · MRR R$ 170.584 · precisa da lista da base, da esteira de pós-venda e do assistente contratado.", resp:"Felipe", prazo:"2026-08-31", feito:false, fonte:"Rampa", obs:"" },
+        { id:"t402", titulo:"Setembro · 61 assessorias privadas", detalhe:"+8 no mês · MRR R$ 186.128 · precisa do CRM rodando, da margem apurada, do executivo contratado e da tabela de preço.", resp:"Felipe", prazo:"2026-09-30", feito:false, fonte:"Rampa", obs:"" },
+        { id:"t403", titulo:"Outubro · 72 privadas e 16 prefeituras", detalhe:"+11 no mês · MRR R$ 212.008 · Felipe com 80% do tempo no comercial, executivo em rampagem, indicações rodando.", resp:"Felipe", prazo:"2026-10-31", feito:false, fonte:"Rampa", obs:"" },
+        { id:"t404", titulo:"Novembro · 85 privadas e 18 prefeituras", detalhe:"+13 no mês · MRR R$ 246.281 · política comercial publicada e manual do vendedor em uso.", resp:"Felipe", prazo:"2026-11-30", feito:false, fonte:"Rampa", obs:"" },
+        { id:"t405", titulo:"Dezembro · 100 privadas e 20 prefeituras", detalhe:"+15 no mês · MRR R$ 284.440 (+74,7%) · fechamento do ciclo e renovações.", resp:"Felipe", prazo:"2026-12-21", feito:false, fonte:"Rampa", prio:"Meta do ciclo", obs:"" }
+      ]},
+
+    { id:"f5", numero:5, cor:"#0d1b2a",
+      titulo:"Fase 5 · Checkpoints do ciclo", meta:"quatro verificações com decisão associada",
+      tarefas:[
+        { id:"t501", titulo:"15/09 · O Felipe está com pelo menos 60% do tempo no comercial?", detalhe:"Verificar também: a margem está apurada? O CRM está carregado? Se não: replanejar a Meta 1 e escalar a transição para os sócios.", resp:"Wochiton", prazo:"2026-09-15", feito:false, fonte:"Checkpoint", obs:"" },
+        { id:"t502", titulo:"30/09 · A conversão da base ficou acima de 20%?", detalhe:"A tabela de preço e a alçada existem? Se a conversão ficou abaixo: contratar a terceira pessoa. Se a tabela não existe: adiar a contratação do executivo.", resp:"CHR", prazo:"2026-09-30", feito:false, fonte:"Checkpoint", prio:"Premissa crítica", obs:"" },
+        { id:"t503", titulo:"31/10 · O acumulado chegou a 72 assessorias privadas?", detalhe:"O mapa das prefeituras-alvo está pronto? Se o acumulado está abaixo de 65: revisar a meta de dezembro com os sócios, com número novo e justificativa.", resp:"Felipe", prazo:"2026-10-31", feito:false, fonte:"Checkpoint", obs:"" },
+        { id:"t504", titulo:"21/12 · As metas do ciclo foram atingidas?", detalhe:"Qual o percentual de vendas fechadas sem o Wochiton? Meta: 70%. Define a pauta do E15 e o desenho do ciclo seguinte.", resp:"Sócios + CHR", prazo:"2026-12-21", feito:false, fonte:"Checkpoint", prio:"Termômetro do plano", obs:"" }
+      ]}
+  ]
+};
+
+/* ===================== MOTOR ====================== */
+const ENG_LEVELS = {"Alto":{w:100,c:"#16a34a"},"Médio":{w:60,c:"#d98a00"},"Baixo":{w:32,c:"#dc2626"},"Ausente":{w:12,c:"#9aa3b2"}};
+const NIVEIS = {green:"Em ritmo",amber:"Atenção",orange:"Crítico c/ plano",red:"Bloqueado / urgente"};
+const slug = s => (s||"cliente").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+const LS = "jornada_" + slug(DATA.cliente) + "_v2";
+const LS_OLD = "jornada_" + slug(DATA.cliente) + "_v1";
+const clone = o => JSON.parse(JSON.stringify(o));
+const esc = s => String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const escA = s => esc(s).replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+
+let S = JSON.parse(localStorage.getItem(LS) || "null");
+if(!S || !S.doc){
+  S = { doc: clone(DATA), collapsed:{} };
+  // migra marcações da versão anterior, se existirem
+  try{
+    const old = JSON.parse(localStorage.getItem(LS_OLD) || "null");
+    if(old){
+      if(old.tasks) S.doc.fases.forEach(f=>f.tarefas.forEach(t=>{ const o=old.tasks[t.id]; if(o){ t.feito=!!o.done; if(o.resp)t.resp=o.resp; if(o.prazo)t.prazo=o.prazo; } }));
+      if(old.eng) S.doc.equipe.forEach(p=>{ if(old.eng[p.n]) p.e=old.eng[p.n]; });
+      if(old.collapsed) S.collapsed = old.collapsed;
+    }
+  }catch(e){}
+}
+if(!S.collapsed) S.collapsed={};
+const D = () => S.doc;
+const save = () => localStorage.setItem(LS, JSON.stringify(S));
+const allTasks = () => D().fases.flatMap(f=>f.tarefas);
+function uid(p){ let n=1, id; const used=new Set(allTasks().map(t=>t.id).concat(D().fases.map(f=>f.id))); do{ id=p+Date.now().toString(36)+n; n++; }while(used.has(id)); return id; }
+function peopleList(){
+  const set=new Set((D().equipe||[]).map(p=>p.n));
+  (D().pessoas||[]).forEach(p=>set.add(p));
+  allTasks().forEach(t=>{ if(t.resp) set.add(t.resp); });
+  return ["—",...[...set].filter(x=>x&&x!=="—")];
+}
+
+/* ===================== MODAL ====================== */
+let _onSave=null;
+function abrirModal(titulo, corpoHTML, botoes){
+  document.getElementById("mod-t").textContent = titulo;
+  document.getElementById("mod-b").innerHTML = corpoHTML;
+  document.getElementById("mod-f").innerHTML = botoes;
+  document.getElementById("ov").hidden = false;
+  const first = document.querySelector("#mod-b input,#mod-b textarea,#mod-b select"); if(first) setTimeout(()=>first.focus(),40);
+}
+function fecharModal(){ document.getElementById("ov").hidden = true; _onSave=null; }
+const V = k => { const el=document.getElementById("f_"+k); return el? el.value : ""; };
+function fld(k,label,val,tipo,extra){
+  tipo = tipo||"text";
+  if(tipo==="textarea") return `<div class="fld"><label>${label}</label><textarea id="f_${k}" ${extra||""}>${esc(val||"")}</textarea></div>`;
+  if(tipo==="select") return `<div class="fld"><label>${label}</label><select id="f_${k}">${extra}</select></div>`;
+  return `<div class="fld"><label>${label}</label><input id="f_${k}" type="${tipo}" value="${escA(val||"")}"></div>`;
+}
+const optsOf = (arr,sel) => arr.map(o=>{ const v=Array.isArray(o)?o[0]:o, l=Array.isArray(o)?o[1]:o;
+  return `<option value="${escA(v)}" ${v===sel?"selected":""}>${esc(l)}</option>`; }).join("");
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") fecharModal(); });
+
+/* ===================== HEADER ====================== */
+function renderHeader(){
+  document.getElementById("h-title").textContent = "🧭 Jornada da Mentoria — " + D().cliente;
+  document.getElementById("h-sub").textContent = D().subtitulo || "";
+  document.getElementById("h-chips").innerHTML = (D().chips||[]).map(c=>`<span class="chip">${esc(c)}</span>`).join("");
+  document.getElementById("f-contact").textContent = D().contato || "";
+  document.title = "Jornada da Mentoria · " + D().cliente;
+}
+
+/* ===================== TIMELINE ====================== */
+function renderTimeline(){
+  const sec=document.getElementById("sec-tl");
+  const E = D().encontros||[];
+  if(!E.length){ document.getElementById("timeline").innerHTML=`<div class="tl-hint">Nenhum encontro cadastrado.</div>`; }
+  else document.getElementById("timeline").innerHTML = E.map((e,i)=>`
+    <div class="tl-node ${e.s||"plan"}" onclick="verEncontro(${i})" title="Clique para abrir">
+      <div class="tl-dot"></div>
+      <div class="tl-label">${esc(e.n)}</div><div class="tl-date">${esc(e.d)}</div>
+      <div class="tl-theme">${esc(e.t)}</div>
+      <div class="tl-mark">${e.resumo?"📝 registrado":""}</div>
+    </div>`).join("");
+  const done = E.filter(e=>e.s==="done").length;
+  document.getElementById("stEnc").textContent = done;
+}
+function verEncontro(i){
+  const e = D().encontros[i];
+  const badge = {done:["st green","Realizado"],now:["st orange","Em andamento"],plan:["st amber","Planejado"]}[e.s||"plan"];
+  const ents = (e.entregas||[]).filter(Boolean);
+  const corpo = `<div class="rd">
+    <p style="margin-bottom:10px"><span class="${badge[0]}">${badge[1]}</span> &nbsp;<b>${esc(e.n)}</b> · ${esc(e.d)}</p>
+    <h4>Tema do encontro</h4><p>${esc(e.t)}</p>
+    <h4>O que foi feito</h4>${e.resumo?`<p>${esc(e.resumo)}</p>`:`<p class="empty">Ainda não registrado. Clique em “Editar” para escrever o resumo depois do encontro.</p>`}
+    <h4>Entregáveis</h4>${ents.length?`<ul>${ents.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:`<p class="empty">Nenhum entregável listado.</p>`}
+    ${e.obs?`<h4>Observações</h4><div class="obsq">${esc(e.obs)}</div>`:""}
+  </div>`;
+  abrirModal(`${e.n} · ${e.t}`, corpo,
+    `<button class="btn dgr" onclick="excluirEncontro(${i})">Excluir</button>
+     <button class="btn" onclick="fecharModal()">Fechar</button>
+     <button class="btn pri" onclick="editEncontro(${i})">✏️ Editar</button>`);
+}
+function editEncontro(i){
+  const novo = i<0;
+  const e = novo ? {n:"",d:"",t:"",s:"plan",resumo:"",entregas:[],obs:""} : D().encontros[i];
+  const corpo = `
+    <div class="grid2">${fld("n","Rótulo",e.n,"text")}${fld("d","Data (dd/mm)",e.d,"text")}</div>
+    ${fld("t","Tema do encontro",e.t,"text")}
+    ${fld("s","Status",null,"select",optsOf([["done","Realizado"],["now","Em andamento"],["plan","Planejado"]],e.s||"plan"))}
+    ${fld("resumo","O que foi feito — resumo do encontro",e.resumo,"textarea",'rows="5"')}
+    ${fld("entregas","Entregáveis (um por linha)",(e.entregas||[]).join("\\n"),"textarea",'rows="5"')}
+    ${fld("obs","Observações",e.obs,"textarea",'rows="3"')}`;
+  abrirModal(novo?"Novo encontro":("Editar "+e.n), corpo,
+    `<button class="btn" onclick="${novo?"fecharModal()":"verEncontro("+i+")"}">Cancelar</button>
+     <button class="btn pri" onclick="salvarEncontro(${i})">Salvar</button>`);
+}
+function salvarEncontro(i){
+  const o = { n:V("n")||"E?", d:V("d"), t:V("t"), s:V("s"),
+    resumo:V("resumo"), entregas:V("entregas").split("\n").map(x=>x.trim()).filter(Boolean), obs:V("obs") };
+  if(i<0) D().encontros.push(o); else D().encontros[i] = Object.assign(D().encontros[i], o);
+  save(); fecharModal(); renderTimeline();
+}
+function novoEncontro(){ editEncontro(-1); }
+function excluirEncontro(i){
+  if(!confirm(`Excluir o encontro ${D().encontros[i].n}?`)) return;
+  D().encontros.splice(i,1); save(); fecharModal(); renderTimeline();
+}
+
+/* ===================== PILARES ====================== */
+function renderPillars(){
+  const P = D().pilares||[];
+  document.getElementById("pillars").innerHTML = P.length ? P.map((p,i)=>`
+    <div class="pill" style="border-top-color:var(--${p.nivel==='green'?'green':p.nivel==='red'?'red':p.nivel==='orange'?'orange':'amber'})">
+      <div class="ptop"><h3>${esc(p.n)}</h3><span class="st ${p.nivel||'amber'}">${esc(p.st)}</span></div>
+      <p>${esc(p.d)}</p>
+      <div style="margin-top:10px;display:flex;gap:2px;justify-content:flex-end">
+        <button class="mini" title="Editar" onclick="editPilar(${i})">✏️</button>
+        <button class="mini" title="Excluir" onclick="excluirPilar(${i})">🗑️</button>
+      </div></div>`).join("") : `<div class="tl-hint">Nenhum pilar cadastrado.</div>`;
+}
+function editPilar(i){
+  const novo = i<0; const p = novo ? {n:"",st:"",nivel:"amber",d:""} : D().pilares[i];
+  const corpo = `${fld("n","Pilar / frente",p.n,"text")}
+    <div class="grid2">${fld("st","Rótulo do status",p.st,"text")}
+    ${fld("nivel","Nível",null,"select",optsOf(Object.entries(NIVEIS).map(([k,v])=>[k,v]),p.nivel||"amber"))}</div>
+    ${fld("d","Descrição / situação atual",p.d,"textarea",'rows="4"')}
+    <div class="fld"><div class="hint">O nível define a cor da barra: verde em ritmo, âmbar atenção, laranja crítico com plano, vermelho bloqueado.</div></div>`;
+  abrirModal(novo?"Novo pilar":"Editar pilar", corpo,
+    `<button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn pri" onclick="salvarPilar(${i})">Salvar</button>`);
+}
+function salvarPilar(i){
+  const o = { n:V("n"), st:V("st"), nivel:V("nivel"), d:V("d") };
+  if(!D().pilares) D().pilares=[];
+  if(i<0) D().pilares.push(o); else D().pilares[i]=Object.assign(D().pilares[i],o);
+  save(); fecharModal(); renderPillars();
+}
+function excluirPilar(i){ if(!confirm(`Excluir o pilar “${D().pilares[i].n}”?`))return; D().pilares.splice(i,1); save(); renderPillars(); }
+
+/* ===================== EQUIPE ====================== */
+function renderEng(){
+  const Q = D().equipe||[];
+  document.getElementById("eng").innerHTML = Q.length ? Q.map((p,i)=>{
+    const cur = p.e || "Médio"; const lv = ENG_LEVELS[cur]||ENG_LEVELS["Médio"];
+    return `<div class="eperson">
+      <div class="en"><span>${esc(p.n)}</span>
+        <span style="display:flex;align-items:center;gap:2px">
+          <span style="font-size:10px;color:${lv.c}">●</span>
+          <button class="mini" title="Editar" onclick="editPessoa(${i})">✏️</button>
+          <button class="mini" title="Excluir" onclick="excluirPessoa(${i})">🗑️</button></span></div>
+      <div class="role">${esc(p.r||"")}</div><div class="ebar"><i style="width:${lv.w}%;background:${lv.c}"></i></div>
+      <select onchange="setEng(${i},this.value)">${optsOf(Object.keys(ENG_LEVELS),cur)}</select></div>`;
+  }).join("") : `<div class="tl-hint">Nenhuma pessoa cadastrada.</div>`;
+}
+function setEng(i,v){ D().equipe[i].e=v; save(); renderEng(); }
+function editPessoa(i){
+  const novo = i<0; const p = novo ? {n:"",r:"",e:"Médio"} : D().equipe[i];
+  const corpo = `${fld("n","Nome",p.n,"text")}${fld("r","Papel / responsabilidade",p.r,"textarea",'rows="3"')}
+    ${fld("e","Engajamento",null,"select",optsOf(Object.keys(ENG_LEVELS),p.e||"Médio"))}`;
+  abrirModal(novo?"Nova pessoa":"Editar pessoa", corpo,
+    `<button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn pri" onclick="salvarPessoa(${i})">Salvar</button>`);
+}
+function salvarPessoa(i){
+  const o={n:V("n"),r:V("r"),e:V("e")}; if(!o.n){alert("Informe o nome.");return;}
+  if(!D().equipe) D().equipe=[];
+  if(i<0) D().equipe.push(o); else D().equipe[i]=Object.assign(D().equipe[i],o);
+  save(); fecharModal(); renderEng(); renderJourney();
+}
+function excluirPessoa(i){
+  const p=D().equipe[i]; const n=allTasks().filter(t=>t.resp===p.n).length;
+  if(!confirm(`Excluir ${p.n}?` + (n?`\n\n${n} tarefa(s) estão sob a responsabilidade dela e ficarão sem responsável.`:""))) return;
+  D().equipe.splice(i,1); save(); renderEng(); renderJourney();
+}
+
+/* ===================== TAREFAS ====================== */
+function findT(id){ for(const f of D().fases){ const k=f.tarefas.findIndex(t=>t.id===id); if(k>-1) return {f,k,t:f.tarefas[k]}; } return null; }
+function renderJourney(){
+  const people = peopleList();
+  document.getElementById("journey").innerHTML = D().fases.map(ph=>{
+    const rows = ph.tarefas.map((t,ix)=>`
+      <div class="task ${t.feito?"done":""}" id="card_${t.id}">
+        <input type="checkbox" class="cbox" ${t.feito?"checked":""} onchange="toggle('${t.id}',this.checked)">
+        <div><div class="ttitle">${esc(t.titulo)}</div><div class="tdetail">${esc(t.detalhe||"")}</div>
+          <div class="tbadges">${t.fonte?`<span class="bdg src">${esc(t.fonte)}</span>`:""}${t.prio?`<span class="bdg gut">⚡ ${esc(t.prio)}</span>`:""}</div>
+          <div class="tctrl">
+            <label>Responsável<select onchange="setField('${t.id}','resp',this.value)">${optsOf(people,t.resp||"—")}</select></label>
+            <label>Prazo<input type="date" value="${escA(t.prazo||"")}" onchange="setField('${t.id}','prazo',this.value)"></label>
+            <button class="obsbtn ${t.obs?"has":""}" onclick="toggleObs('${t.id}')">💬 Obs${t.obs?" •":""}</button>
+          </div>
+          <div class="obsbox" id="obs_${t.id}" style="display:none">
+            <textarea placeholder="Observações desta tarefa — o que travou, o que ficou combinado, com quem falar…"
+              oninput="setField('${t.id}','obs',this.value,true)">${esc(t.obs||"")}</textarea>
+          </div>
+        </div>
+        <div class="tacts">
+          <button class="mini" title="Editar / realocar" onclick="editTarefa('${t.id}')">✏️</button>
+          <button class="mini" title="Subir" onclick="moverTarefa('${t.id}',-1)">▲</button>
+          <button class="mini" title="Descer" onclick="moverTarefa('${t.id}',1)">▼</button>
+          <button class="mini" title="Excluir" onclick="excluirTarefa('${t.id}')">🗑️</button>
+        </div>
+      </div>`).join("");
+    const done = ph.tarefas.filter(t=>t.feito).length, tot=ph.tarefas.length, pct=tot?Math.round(done/tot*100):0;
+    const col = S.collapsed[ph.id] ? "collapsed":"";
+    return `<div class="phase ${col}" id="ph_${ph.id}">
+      <div class="phase-head">
+        <div class="phase-num" style="background:${ph.cor||'#1f47d6'}" onclick="togglePhase('${ph.id}')">${esc(ph.numero!=null?ph.numero:"•")}</div>
+        <div style="flex:1;cursor:pointer" onclick="togglePhase('${ph.id}')"><h3>${esc(ph.titulo)}</h3><div class="pmeta">${esc(ph.meta||"")}</div></div>
+        <div class="phase-prog" onclick="togglePhase('${ph.id}')"><div class="pp-bar"><i style="width:${pct}%"></i></div><div class="pp-txt">${done}/${tot} concluídas</div></div>
+        <button class="mini" title="Editar fase" onclick="editFase('${ph.id}')">✏️</button>
+        <button class="mini" title="Excluir fase" onclick="excluirFase('${ph.id}')">🗑️</button>
+        <span class="caret" onclick="togglePhase('${ph.id}')">▼</span></div>
+      <div class="tasks">${rows}
+        <button class="addbtn" style="justify-self:start" onclick="novaTarefa('${ph.id}')">+ Nova tarefa nesta fase</button>
+      </div></div>`;
+  }).join("");
+}
+function toggleObs(id){ const el=document.getElementById("obs_"+id); el.style.display = el.style.display==="none" ? "block":"none"; if(el.style.display==="block") el.querySelector("textarea").focus(); }
+function toggle(id,v){ const r=findT(id); if(!r)return; r.t.feito=v; save(); document.getElementById("card_"+id).classList.toggle("done",v); updateProgress(); refreshPhaseBars(); }
+function setField(id,f,v,quiet){ const r=findT(id); if(!r)return; r.t[f]=v; save();
+  if(f==="obs" && !quiet) renderJourney();
+  if(f==="obs"){ const b=document.querySelector(`#card_${id} .obsbtn`); if(b){ b.classList.toggle("has",!!v); b.textContent = "💬 Obs"+(v?" •":""); } } }
+function togglePhase(id){ S.collapsed[id]=!S.collapsed[id]; save(); document.getElementById("ph_"+id).classList.toggle("collapsed"); }
+function refreshPhaseBars(){ D().fases.forEach(ph=>{ const done=ph.tarefas.filter(t=>t.feito).length, tot=ph.tarefas.length, pct=tot?Math.round(done/tot*100):0;
+  const el=document.querySelector("#ph_"+ph.id+" .pp-bar i"), tx=document.querySelector("#ph_"+ph.id+" .pp-txt");
+  if(el)el.style.width=pct+"%"; if(tx)tx.textContent=`${done}/${tot} concluídas`; }); }
+function updateProgress(){ const all=allTasks(); const done=all.filter(t=>t.feito).length; const pct=all.length?Math.round(done/all.length*100):0;
+  document.getElementById("ringPct").textContent=pct+"%"; document.getElementById("ring").style.setProperty("--p",pct);
+  document.getElementById("stDone").textContent=done; document.getElementById("stTotal").textContent=all.length; document.getElementById("stOpen").textContent=all.length-done; }
+
+function editTarefa(id, faseId){
+  const novo = !id;
+  const r = novo ? null : findT(id);
+  const t = novo ? {titulo:"",detalhe:"",resp:"—",prazo:"",fonte:"",prio:"",obs:"",feito:false} : r.t;
+  const faseAtual = novo ? faseId : r.f.id;
+  const fases = D().fases.map(f=>[f.id, f.titulo]);
+  const corpo = `${fld("titulo","Título da tarefa",t.titulo,"text")}
+    ${fld("detalhe","Detalhe / contexto",t.detalhe,"textarea",'rows="3"')}
+    <div class="grid2">
+      ${fld("resp","Responsável",null,"select",optsOf(peopleList(),t.resp||"—"))}
+      ${fld("prazo","Prazo",t.prazo,"date")}
+    </div>
+    <div class="grid2">
+      ${fld("fonte","Encontro de origem",t.fonte,"text")}
+      ${fld("prio","Selo de prioridade",t.prio,"text")}
+    </div>
+    ${fld("fase","Fase (realocar a tarefa)",null,"select",optsOf(fases,faseAtual))}
+    ${fld("obs","Observações",t.obs,"textarea",'rows="3"')}`;
+  abrirModal(novo?"Nova tarefa":"Editar tarefa", corpo,
+    `${novo?"":`<button class="btn dgr" onclick="excluirTarefa('${id}',true)">Excluir</button>`}
+     <button class="btn" onclick="fecharModal()">Cancelar</button>
+     <button class="btn pri" onclick="salvarTarefa(${novo?"null":"'"+id+"'"})">Salvar</button>`);
+}
+function novaTarefa(faseId){ editTarefa(null, faseId); }
+function salvarTarefa(id){
+  const o = { titulo:V("titulo"), detalhe:V("detalhe"), resp:V("resp"), prazo:V("prazo"),
+              fonte:V("fonte"), prio:V("prio"), obs:V("obs") };
+  if(!o.titulo){ alert("Informe o título da tarefa."); return; }
+  const destino = D().fases.find(f=>f.id===V("fase")) || D().fases[0];
+  if(id){
+    const r=findT(id); Object.assign(r.t,o);
+    if(r.f.id!==destino.id){ r.f.tarefas.splice(r.k,1); destino.tarefas.push(r.t); }
+  } else {
+    destino.tarefas.push(Object.assign({id:uid("t"),feito:false},o));
+  }
+  save(); fecharModal(); renderJourney(); updateProgress();
+}
+function excluirTarefa(id,fromModal){
+  const r=findT(id); if(!r) return;
+  if(!confirm(`Excluir a tarefa “${r.t.titulo}”?`)) return;
+  r.f.tarefas.splice(r.k,1); save(); if(fromModal) fecharModal(); renderJourney(); updateProgress();
+}
+function moverTarefa(id,dir){
+  const r=findT(id); if(!r) return;
+  const j=r.k+dir;
+  if(j<0||j>=r.f.tarefas.length){
+    // passa para a fase anterior/seguinte
+    const fi=D().fases.findIndex(f=>f.id===r.f.id), nf=D().fases[fi+dir];
+    if(!nf) return;
+    r.f.tarefas.splice(r.k,1);
+    if(dir<0) nf.tarefas.push(r.t); else nf.tarefas.unshift(r.t);
+  } else {
+    const [x]=r.f.tarefas.splice(r.k,1); r.f.tarefas.splice(j,0,x);
+  }
+  save(); renderJourney(); updateProgress();
+}
+
+/* ===================== FASES ====================== */
+function editFase(id){
+  const novo=!id; const f = novo? {id:"",numero:D().fases.length,cor:"#1f47d6",titulo:"",meta:""} : D().fases.find(x=>x.id===id);
+  const corpo = `${fld("titulo","Título da fase",f.titulo,"text")}
+    ${fld("meta","Período / status",f.meta,"text")}
+    <div class="grid2">${fld("numero","Número no círculo",f.numero,"text")}${fld("cor","Cor (hex)",f.cor,"text")}</div>`;
+  abrirModal(novo?"Nova fase":"Editar fase", corpo,
+    `<button class="btn" onclick="fecharModal()">Cancelar</button><button class="btn pri" onclick="salvarFase(${novo?"null":"'"+id+"'"})">Salvar</button>`);
+}
+function novaFase(){ editFase(null); }
+function salvarFase(id){
+  const o={titulo:V("titulo"),meta:V("meta"),numero:V("numero"),cor:V("cor")||"#1f47d6"};
+  if(!o.titulo){alert("Informe o título da fase.");return;}
+  if(id) Object.assign(D().fases.find(x=>x.id===id),o);
+  else D().fases.push(Object.assign({id:uid("f"),tarefas:[]},o));
+  save(); fecharModal(); renderJourney(); updateProgress();
+}
+function excluirFase(id){
+  const f=D().fases.find(x=>x.id===id);
+  if(!confirm(`Excluir a fase “${f.titulo}” e as ${f.tarefas.length} tarefa(s) dentro dela?`)) return;
+  D().fases = D().fases.filter(x=>x.id!==id); save(); renderJourney(); updateProgress();
+}
+
+/* ===================== EXPORTAR / IMPORTAR / RESET ====================== */
+function exportar(){
+  const blob = new Blob([JSON.stringify(S.doc,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download = "jornada-"+slug(D().cliente)+".json"; a.click(); URL.revokeObjectURL(a.href);
+}
+function importar(inp){
+  const f=inp.files[0]; if(!f) return; const rd=new FileReader();
+  rd.onload=()=>{ try{ const o=JSON.parse(rd.result);
+      if(!o.fases) throw new Error("arquivo sem 'fases'");
+      if(!confirm("Substituir o painel atual pelo arquivo importado?")) return;
+      S.doc=o; save(); init(); alert("Painel importado.");
+    }catch(e){ alert("Não consegui ler o arquivo: "+e.message); } };
+  rd.readAsText(f); inp.value="";
+}
+function resetAll(){
+  if(!confirm("Isso apaga TODAS as edições, tarefas criadas e observações, e volta ao plano original. Continuar?")) return;
+  S = { doc: clone(DATA), collapsed:{} }; save(); init();
+}
+function init(){ renderHeader(); renderTimeline(); renderPillars(); renderEng(); renderJourney(); updateProgress(); }
+init(); save();
+</script>
+</body>
+</html>
